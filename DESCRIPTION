@@ -1,0 +1,30 @@
+Package: xmrconsensus
+Title: Shiny App about Monero blockchain consensus live status
+Version: 0.0.1
+Authors@R: 
+    c(person(family = "Rucknium",
+             role = c("cre", "aut", "cph"),
+             email = "Rucknium@protonmail.com",
+             comment = c(ORCID = "0000-0001-5999-8950"))
+      )
+Description: Shiny App about Monero blockchain consensus live status.
+License: AGPL (>= 3)
+URL: https://github.com/Rucknium/xmrconsensus
+BugReports: https://github.com/Rucknium/xmrconsensus/issues
+Imports: 
+    config,
+    data.table,
+    golem,
+    igraph,
+    pkgload,
+    RCurl,
+    RJSONIO,
+    shiny
+Suggests: 
+    spelling,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Encoding: UTF-8
+Language: en-US
+LazyData: true
+RoxygenNote: 7.3.2
