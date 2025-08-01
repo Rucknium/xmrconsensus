@@ -10,9 +10,15 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     # Your application UI logic
     fluidPage(
+      titlePanel("Monero Consensus Status"),
+      shiny::h4(shiny::HTML('The open source code for this web app is available <a href="https://github.com/Rucknium/xmrconsensus">here</a>.')),
+      shiny::br(),
       # golem::golem_welcome_page() # Remove this line to start building your UI
-      plotOutput("plot1", inline = TRUE)
+      plotOutput("plot1", inline = TRUE),
       # inline = TRUE means that it displays the plot with dimensions specified on the server side
+      shiny::hr(),
+      shiny::h4(shiny::HTML('Created by <a href="https://github.com/Rucknium">Rucknium</a> at the <a href="https://github.com/monero-project/research-lab">Monero Research Lab</a>')),
+      shiny::h5(shiny::HTML('Pool mining data collected by <a href="https://git.gammaspectra.live/WeebDataHoarder/monero-blocks">monero-blocks</a>, developed by DataHoarder.'))
     )
   )
 }

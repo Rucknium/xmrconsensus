@@ -27,7 +27,7 @@ app_server <- function(input, output, session) {
 
       isolate(current.chaintip.hash(new.chaintip.hash))
 
-      result <- alt_chains_graph(unrestricted.rpc.url = "http://127.0.0.1:18081")
+      result <- alt_chains_graph(unrestricted.rpc.url = unrestricted.rpc.url)
 
       alt_chain_plot_height(result$plot.height)
 
