@@ -11,6 +11,8 @@
 #' @noRd
 alt_chains_graph <- function(unrestricted.rpc.url) {
 
+  n.blocks.display.chaintip <- 10
+
   handle <- RCurl::getCurlHandle()
 
   # https://docs.getmonero.org/rpc-library/monerod-rpc/#get_alternate_chains
@@ -54,7 +56,7 @@ alt_chains_graph <- function(unrestricted.rpc.url) {
   block_headers[, rearrange.index := if(data.table::first(not.alt)) cumsum(not.alt) else 0,
     data.table::rleid(not.alt)]
 
-  block_headers <- block_headers[rearrange.index %in% 0:1 | height >= max(height) - 10, ]
+  block_headers <- block_headers[rearrange.index %in% 0:1 | height >= (max(height) - n.blocks.display.chaintip), ]
 
   block_headers$prev_hash[2:nrow(block_headers)] <- block_headers$hash[-nrow(block_headers)]
   # This makes sure that the false link that bridges over omitted blocks is mended
@@ -131,17 +133,19 @@ alt_chains_graph <- function(unrestricted.rpc.url) {
     "Pool: " , pool
   )]
 
-  chain.attr[rearrange.index == 1, label := paste0("[", prettyNum(blocks.omitted, big.mark = ","), " blocks omitted]")]
+  chain.attr[rearrange.index == 1 & height < (max(height) - n.blocks.display.chaintip),
+    label := paste0("[", prettyNum(blocks.omitted, big.mark = ","), " blocks of\nuncontested chain omitted]")]
+  # Don't display "blocks omitted" if the orphan block is in the chaintip
 
   chain.attr[, color := ifelse(pool == "unknown", "pink", "lightgreen")]
-  chain.attr[rearrange.index == 1, color := "yellow"]
+  chain.attr[rearrange.index == 1 & height < (max(height) - n.blocks.display.chaintip), color := "yellow"]
 
   vertex.order <- unique(c(t(as.matrix(chain.graph))))
   # This is how things are arranged in the plot
 
   chain.attr <- chain.attr[match(vertex.order, hash), ]
   chain.attr[is.na(color), color := "yellow"]
-  chain.attr[is.na(label), label := paste0("[", prettyNum(blocks.omitted, big.mark = ","), " blocks omitted]")]
+  chain.attr[is.na(label), label := paste0("[", prettyNum(blocks.omitted, big.mark = ","), " blocks of\nuncontested chain omitted]")]
   # "Missing" because this vertex only appears in 'prev_hash', not 'hash'
 
   igraph.plot.data <- igraph::graph_from_edgelist(as.matrix(chain.graph), directed = TRUE)

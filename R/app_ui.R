@@ -15,7 +15,7 @@ app_ui <- function(request) {
       shiny::br(),
       shiny::h4(shiny::HTML('This web app displays a visualization of recent <a href="https://monero.stackexchange.com/questions/3311/what-are-orphaned-blocks">orphaned blocks</a> and alternative chains of the Monero blockchain.')),
       shiny::br(),
-      shiny::h4(shiny::HTML('Occasional orphaned blocks are normal. They occur naturally when two miners mine valid blocks almost simultaneously. A high rate of orphaned blocks can indicate a problem in network-wide connection latency or even malicious behavior by one or more entities with a large hashpower share.')),
+      shiny::h4(shiny::HTML('Occasional orphaned blocks are normal. They occur naturally when two miners mine different valid blocks almost simultaneously. A high rate of orphaned blocks can indicate a problem in network-wide connection latency or even malicious behavior by one or more entities with a large hashpower share.')),
       shiny::br(),
       shiny::h4(shiny::HTML('If a malicious entity with a high share of network hashpower attempted a selfish mining strategy to raise its share of block rewards, the rate of orphaned blocks could increase. The malicious entity would cause the blocks of other pools to become orphaned. This evidence would appear in the visualization below.')),
       shiny::br(),
