@@ -88,6 +88,10 @@ alt_chains_graph <- function(unrestricted.rpc.url) {
 
   alt_chains <- alt_chains[prev_hash %in% unlist(block_headers), ]
 
+  data.table::setorder(alt_chains, height)
+  # Important to set order like this so that orphan blocks alternate sides
+  # TODO: Make sure this works ok with alt chains length 2 or longer
+
   alt_chains.graph <- alt_chains[, .(prev_hash, hash)]
 
   alt_chains.attr <- alt_chains[, .(hash, height)]
