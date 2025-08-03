@@ -23,6 +23,11 @@ app_ui <- function(request) {
       shiny::br(),
       shiny::h4(shiny::HTML('This web app is new and untested. 2025-08-02: Known bug that fails to assign some blocks to mining pools is being investigated.')),
       shiny::br(),
+      shiny::h4(shiny::strong(shiny::HTML(paste0(
+        shiny::textOutput("orphaned_blocks_last_day", inline = TRUE),
+        " (", shiny::textOutput("orphaned_blocks_last_day_percent", inline = TRUE), "%)",
+        ' block(s) orphaned in last 720 blocks (about 24 hours).')))),
+      shiny::br(),
       # golem::golem_welcome_page() # Remove this line to start building your UI
       plotOutput("plot1", inline = TRUE),
       # inline = TRUE means that it displays the plot with dimensions specified on the server side

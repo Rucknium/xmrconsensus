@@ -29,7 +29,11 @@ app_server <- function(input, output, session) {
 
       result <- alt_chains_graph(unrestricted.rpc.url = unrestricted.rpc.url)
 
-      alt_chain_plot_height(result$plot.height)
+      output$orphaned_blocks_last_day <- renderText(result$orphaned.blocks.last.day)
+      output$orphaned_blocks_last_day_percent <-
+        renderText(round( 100 * result$orphaned.blocks.last.day / 720, digits = 2))
+
+      isolate(alt_chain_plot_height(result$plot.height))
 
       layout.raw <- igraph::layout_as_tree(result$igraph.plot.data, flip.y = FALSE)
 

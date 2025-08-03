@@ -92,6 +92,9 @@ alt_chains_graph <- function(unrestricted.rpc.url) {
   # Important to set order like this so that orphan blocks alternate sides
   # TODO: Make sure this works ok with alt chains length 2 or longer
 
+  orphaned.blocks.last.day <- alt_chains[height >= chaintip.height - 720, .N]
+  # 720 is approximately one day of blocks
+
   alt_chains.graph <- alt_chains[, .(prev_hash, hash)]
 
   alt_chains.attr <- alt_chains[, .(hash, height)]
@@ -156,6 +159,7 @@ alt_chains_graph <- function(unrestricted.rpc.url) {
 
   plot.height <- nrow(block_headers.graph) * 60
 
-  list(igraph.plot.data = igraph.plot.data, chain.attr = chain.attr, plot.height = plot.height)
+  list(igraph.plot.data = igraph.plot.data, chain.attr = chain.attr,
+    plot.height = plot.height, orphaned.blocks.last.day = orphaned.blocks.last.day)
 
 }
