@@ -12,6 +12,7 @@ License: AGPL (>= 3)
 URL: https://github.com/Rucknium/xmrconsensus
 BugReports: https://github.com/Rucknium/xmrconsensus/issues
 Imports: 
+    bslib,
     config,
     data.table,
     golem,

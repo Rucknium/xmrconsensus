@@ -42,6 +42,20 @@ app_server <- function(input, output, session) {
         # in the package) when the plot area is very tall.
         # First, create the plot area:
 
+        # Finally, plot the main plot
+        if (input$dark_mode == "dark") {
+          par(bg = "black")
+          result$chain.attr[color == "pink", color := "darkred"]
+          result$chain.attr[color == "lightgreen", color := "darkgreen"]
+          result$chain.attr[color == "yellow", color := "yellow4"]
+        } else {
+          par(bg = "white")
+          result$chain.attr[color == "darkred", color := "pink"]
+          result$chain.attr[color == "darkgreen", color := "lightgreen"]
+          result$chain.attr[color == "yellow4", color := "yellow"]
+          # Need to the "else" so that toggle works between plot refreshes
+        }
+
         plot(result$igraph.plot.data, layout = layout.raw,
           main = "",
           asp = 0,
@@ -53,7 +67,8 @@ app_server <- function(input, output, session) {
         # Allow plotted elements to fall outside of plotting region:
         par(xpd = TRUE)
         # Then erase it:
-        rect(xleft = -5, ybottom = -5, xright = 5, ytop = 5, col = "white")
+        rect(xleft = -5, ybottom = -5, xright = 5, ytop = 5,
+          col = ifelse(input$dark_mode == "dark", "black", "white"))
 
         # Then manually plot the edges, which will go below the other plotting
         # elements later.
@@ -78,8 +93,6 @@ app_server <- function(input, output, session) {
             lwd = 1, col = "gray")
         }
 
-        # Finally, plot the main plot
-
         plot(result$igraph.plot.data, layout = layout.raw,
           add = TRUE,
           main = "",
@@ -88,7 +101,7 @@ app_server <- function(input, output, session) {
           edge.arrow.mode = 0,
           margin = c(-0.15, 0.05, -0.1, 0.1),
           vertex.label.family = "monospace",
-          vertex.label.color = "black",
+          vertex.label.color = ifelse(input$dark_mode == "dark", "white", "black"),
           # https://stackoverflow.com/questions/64207220/rendering-plot-in-r-with-mono-spaced-family-font-does-not-display-characters-any
           vertex.color = result$chain.attr$color,
           vertex.label = result$chain.attr$label
@@ -96,8 +109,11 @@ app_server <- function(input, output, session) {
 
         legend(x = -1, y = 2 + grconvertY(2.3, from = "inches", to = "user"),
           legend = c("Known pool", "Unknown pool or\nsolo miner"),
-          fill = c("lightgreen", "pink"),
+          fill = ifelse(input$dark_mode == rep("dark", 2), c("darkgreen", "darkred"),
+            c("lightgreen", "pink")),
           cex = 1.5,
+          text.col = ifelse(input$dark_mode == "dark", "white", "black"),
+          border = ifelse(input$dark_mode == "dark", "white", "black"),
           bty = "n", horiz = TRUE)
 
 

@@ -9,21 +9,25 @@ app_ui <- function(request) {
     # Leave this function for adding external resources
     golem_add_external_resources(),
     # Your application UI logic
-    fluidPage(
+    bslib::page_fluid(
       titlePanel("Monero Consensus Status"),
-      shiny::h4(shiny::strong(shiny::HTML('The open source code for this web app is available <a href="https://github.com/Rucknium/xmrconsensus">here</a>.'))),
+      shiny::h5(shiny::strong(shiny::HTML('The open source code for this web app is available <a href="https://github.com/Rucknium/xmrconsensus">here</a>.'))),
       shiny::br(),
-      shiny::h4(shiny::HTML('This web app displays a visualization of recent <a href="https://monero.stackexchange.com/questions/3311/what-are-orphaned-blocks">orphaned blocks</a> and alternative chains of the Monero blockchain.')),
+      shiny::h5(shiny::HTML('This web app displays a visualization of recent <a href="https://monero.stackexchange.com/questions/3311/what-are-orphaned-blocks">orphaned blocks</a> and alternative chains of the Monero blockchain.')),
       shiny::br(),
-      shiny::h4(shiny::HTML('Occasional orphaned blocks are normal. They occur naturally when two miners mine different valid blocks almost simultaneously. A high rate of orphaned blocks can indicate a problem in network-wide connection latency or even malicious behavior by one or more entities with a large hashpower share.')),
+      shiny::h5(shiny::HTML('Occasional orphaned blocks are normal. They occur naturally when two miners mine different valid blocks almost simultaneously. A high rate of orphaned blocks can indicate a problem in network-wide connection latency or even malicious behavior by one or more entities with a large hashpower share.')),
       shiny::br(),
-      shiny::h4(shiny::HTML('If a malicious entity with a high share of network hashpower attempted a selfish mining strategy to raise its share of block rewards, the rate of orphaned blocks could increase. The malicious entity would cause the blocks of other pools to become orphaned. This evidence would appear in the visualization below.')),
+      shiny::h5(shiny::HTML('If a malicious entity with a high share of network hashpower attempted a selfish mining strategy to raise its share of block rewards, the rate of orphaned blocks could increase. The malicious entity would cause the blocks of other pools to become orphaned. This evidence would appear in the visualization below.')),
       shiny::br(),
-      shiny::h4(shiny::HTML('A malicious entity with 50 percent or more of total network hashpower could attempt deep chain re-organizations by mining an alternative chain. Alternative chain are like orphaned blocks, but are more than one block in length. Alternative chains should appear in the visualization below.')),
+      shiny::h5(shiny::HTML('A malicious entity with 50 percent or more of total network hashpower could attempt deep chain re-organizations by mining an alternative chain. Alternative chain are like orphaned blocks, but are more than one block in length. Alternative chains should appear in the visualization below.')),
       shiny::br(),
-      shiny::h4(shiny::HTML('This web app is new and untested. 2025-08-02: Known bug that fails to assign some blocks to mining pools is being investigated.')),
+      shiny::h5(shiny::HTML('This web app is new and untested. 2025-08-02: Known bug that fails to assign some blocks to mining pools is being investigated.')),
       shiny::br(),
-      shiny::h4(shiny::strong(shiny::HTML(paste0(
+      shiny::h5('Click to toggle dark mode: '),
+      bslib::input_dark_mode(id = "dark_mode"),
+      shiny::br(),
+      shiny::br(),
+      shiny::h5(shiny::strong(shiny::HTML(paste0(
         shiny::textOutput("orphaned_blocks_last_day", inline = TRUE),
         " (", shiny::textOutput("orphaned_blocks_last_day_percent", inline = TRUE), "%)",
         ' block(s) orphaned in last 720 blocks (about 24 hours).')))),
@@ -32,8 +36,8 @@ app_ui <- function(request) {
       plotOutput("plot1", inline = TRUE),
       # inline = TRUE means that it displays the plot with dimensions specified on the server side
       shiny::hr(),
-      shiny::h4(shiny::HTML('Created by <a href="https://github.com/Rucknium">Rucknium</a> at the <a href="https://github.com/monero-project/research-lab">Monero Research Lab</a>')),
-      shiny::h5(shiny::HTML('Pool mining data collected by <a href="https://git.gammaspectra.live/WeebDataHoarder/monero-blocks">monero-blocks</a>, developed by DataHoarder.'))
+      shiny::h5(shiny::HTML('Created by <a href="https://github.com/Rucknium">Rucknium</a> at the <a href="https://github.com/monero-project/research-lab">Monero Research Lab</a>')),
+      shiny::h6(shiny::HTML('Pool mining data collected by <a href="https://git.gammaspectra.live/WeebDataHoarder/monero-blocks">monero-blocks</a>, developed by DataHoarder.'))
     )
   )
 }
