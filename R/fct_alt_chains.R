@@ -12,6 +12,7 @@
 alt_chains_graph <- function(unrestricted.rpc.url) {
 
   n.blocks.display.chaintip <- 10
+  n.blocks.display.after.orphan <- 1
 
   handle <- RCurl::getCurlHandle()
 
@@ -56,7 +57,8 @@ alt_chains_graph <- function(unrestricted.rpc.url) {
   block_headers[, rearrange.index := if(data.table::first(not.alt)) cumsum(not.alt) else 0,
     data.table::rleid(not.alt)]
 
-  block_headers <- block_headers[rearrange.index %in% 0:1 | height >= (max(height) - n.blocks.display.chaintip), ]
+  block_headers <- block_headers[rearrange.index %in% 0:(1 + n.blocks.display.after.orphan) |
+      height >= (max(height) - n.blocks.display.chaintip), ]
 
   block_headers$prev_hash[2:nrow(block_headers)] <- block_headers$hash[-nrow(block_headers)]
   # This makes sure that the false link that bridges over omitted blocks is mended
@@ -140,12 +142,13 @@ alt_chains_graph <- function(unrestricted.rpc.url) {
     "Pool: " , pool
   )]
 
-  chain.attr[rearrange.index == 1 & height < (max(height) - n.blocks.display.chaintip),
+  chain.attr[rearrange.index == (1 + n.blocks.display.after.orphan) & height < (max(height) - n.blocks.display.chaintip),
     label := paste0("[", prettyNum(blocks.omitted, big.mark = ","), " blocks of\nuncontested chain omitted]")]
   # Don't display "blocks omitted" if the orphan block is in the chaintip
 
   chain.attr[, color := ifelse(pool == "unknown", "pink", "lightgreen")]
-  chain.attr[rearrange.index == 1 & height < (max(height) - n.blocks.display.chaintip), color := "yellow"]
+  chain.attr[rearrange.index == (1 + n.blocks.display.after.orphan) & height < (max(height) - n.blocks.display.chaintip),
+    color := "yellow"]
 
   vertex.order <- unique(c(t(as.matrix(chain.graph))))
   # This is how things are arranged in the plot
