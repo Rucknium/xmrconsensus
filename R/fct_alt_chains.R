@@ -38,8 +38,8 @@ alt_chains_graph <- function(unrestricted.rpc.url) {
     if (length(x$block_hashes) == 1) { return(result) }
     result <- rbind(result,
       data.table(prev_hash = x$block_hashes[1:(length(x$block_hashes) - 1)],
-        hash = x$block_hash[2:length(x$block_hashes)]),
-      height = x$height + 1:(length(x$block_hashes) - 1) )
+        hash = x$block_hashes[2:length(x$block_hashes)],
+      height = x$height + 1:(length(x$block_hashes) - 1)) )
     return(result)
   })
 
@@ -87,8 +87,13 @@ alt_chains_graph <- function(unrestricted.rpc.url) {
   # block_headers.attr[, pool := rep(LETTERS, 10)[seq_len(nrow(block_headers.attr))] ]
   # block_headers.attr[1, pool := "unknown" ]
 
+  hash.exists.in.alt.chain <- vector("logical", nrow(alt_chains))
+  for ( i in seq_along(alt_chains$prev_hash)) {
+    hash.exists.in.alt.chain[i] <- alt_chains$prev_hash[i] %in% alt_chains$hash[-i]
+    # Don't want to count own row as "existing"
+  }
 
-  alt_chains <- alt_chains[prev_hash %in% unlist(block_headers), ]
+  alt_chains <- alt_chains[prev_hash %in% unlist(block_headers) | hash.exists.in.alt.chain, ]
 
   data.table::setorder(alt_chains, height)
   # Important to set order like this so that orphan blocks alternate sides
