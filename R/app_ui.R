@@ -21,7 +21,7 @@ app_ui <- function(request) {
       shiny::br(),
       shiny::h5(shiny::HTML('A malicious entity with 50 percent or more of total network hashpower could attempt deep chain re-organizations by mining an alternative chain. Alternative chain are like orphaned blocks, but are more than one block in length. Alternative chains should appear in the visualization below.')),
       shiny::br(),
-      shiny::h5(shiny::HTML('This web app is new and untested. 2025-08-02: Known bug that fails to assign some blocks to mining pools is being investigated.')),
+      shiny::h5(shiny::HTML('This web app is new and untested.')),
       shiny::br(),
       shiny::h5('Click to toggle dark mode: '),
       bslib::input_dark_mode(id = "dark_mode"),
