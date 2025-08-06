@@ -44,7 +44,8 @@ app_server <- function(input, output, session) {
 
         # Finally, plot the main plot
         if (input$dark_mode == "dark") {
-          par(bg = "black")
+          par(bg = "#1D1F21")
+          # "#1D1F21" is "bs-secondary-bg" for bslib
           result$chain.attr[color == "pink", color := "darkred"]
           result$chain.attr[color == "lightgreen", color := "darkgreen"]
           result$chain.attr[color == "yellow", color := "yellow4"]
@@ -68,7 +69,7 @@ app_server <- function(input, output, session) {
         par(xpd = TRUE)
         # Then erase it:
         rect(xleft = -5, ybottom = -5, xright = 5, ytop = 5,
-          col = ifelse(input$dark_mode == "dark", "black", "white"))
+          col = ifelse(input$dark_mode == "dark", "#1D1F21", "white"))
 
         # Then manually plot the edges, which will go below the other plotting
         # elements later.
