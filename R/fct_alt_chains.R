@@ -40,6 +40,9 @@ alt_chains_graph <- function(unrestricted.rpc.url) {
       data.table(prev_hash = x$block_hashes[1:(length(x$block_hashes) - 1)],
         hash = x$block_hashes[2:length(x$block_hashes)],
       height = x$height + 1:(length(x$block_hashes) - 1)) )
+    result[, height := height - (nrow(result) - 1)]
+    # Docs seem wrong "height - unsigned int; the block height of the first diverging block of this alternative chain."
+    # Seems that height is the height of the _last_ diverging block of the chain.
     return(result)
   })
 
