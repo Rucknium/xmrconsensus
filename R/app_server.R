@@ -10,6 +10,7 @@ app_server <- function(input, output, session) {
   alt_chain_plot_height <- reactiveVal(1000)
   current.chaintip.hash <- reactiveVal("")
   draw.new.plot <- reactiveVal(FALSE)
+  last.update.time <- reactiveVal(as.character(round(Sys.time())))
 
   unrestricted.rpc.url <- "http://127.0.0.1:18081"
 
@@ -135,6 +136,8 @@ app_server <- function(input, output, session) {
 
     isolate( draw.new.plot(current.chaintip.hash() != new.chaintip.hash ))
 
+    isolate(last.update.time(as.character(round(Sys.time()))))
+    output$last_update_time <- renderText(last.update.time())
 
   })
 
