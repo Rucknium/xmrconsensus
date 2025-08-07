@@ -9,10 +9,8 @@
 #' @return The return value, if any, from executing the function.
 #'
 #' @noRd
-alt_chains_graph <- function(unrestricted.rpc.url) {
-
-  n.blocks.display.chaintip <- 10
-  n.blocks.display.after.orphan <- 1
+alt_chains_graph <- function(unrestricted.rpc.url,
+  n.blocks.display.chaintip = 10, n.blocks.display.after.orphan = 1) {
 
   handle <- RCurl::getCurlHandle()
 

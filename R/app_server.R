@@ -9,8 +9,16 @@ app_server <- function(input, output, session) {
 
   alt_chain_plot_height <- reactiveVal(1000)
   current.chaintip.hash <- reactiveVal("")
+  draw.new.plot <- reactiveVal(FALSE)
 
   unrestricted.rpc.url <- "http://127.0.0.1:18081"
+
+  observe({
+    input$n_blocks_display_chaintip
+    input$n_blocks_display_after_orphan
+    draw.new.plot(TRUE)
+    # Trigger draw of new plot if either of these inputs change
+  })
 
   shiny::observe({
 
@@ -19,15 +27,16 @@ app_server <- function(input, output, session) {
     new.chaintip.hash <- rpc.req(unrestricted.rpc.url = unrestricted.rpc.url,
       method = "get_last_block_header", params = "")$result$block_header$hash
 
-    draw.new.plot <- isolate( current.chaintip.hash() != new.chaintip.hash )
 
     # TODO: Cache plot for all users
 
-    if (draw.new.plot) {
+    if ( draw.new.plot() ) {
 
       isolate(current.chaintip.hash(new.chaintip.hash))
 
-      result <- alt_chains_graph(unrestricted.rpc.url = unrestricted.rpc.url)
+      result <- alt_chains_graph(unrestricted.rpc.url = unrestricted.rpc.url,
+        n.blocks.display.chaintip = input$n_blocks_display_chaintip,
+        n.blocks.display.after.orphan = input$n_blocks_display_after_orphan)
 
       output$orphaned_blocks_last_day <- renderText(result$orphaned.blocks.last.day)
       output$orphaned_blocks_last_day_percent <-
@@ -42,7 +51,6 @@ app_server <- function(input, output, session) {
         # in the package) when the plot area is very tall.
         # First, create the plot area:
 
-        # Finally, plot the main plot
         if (input$dark_mode == "dark") {
           par(bg = "#1D1F21")
           # "#1D1F21" is "bs-secondary-bg" for bslib
@@ -94,6 +102,7 @@ app_server <- function(input, output, session) {
             lwd = 1, col = "gray")
         }
 
+        # Finally, plot the main plot
         plot(result$igraph.plot.data, layout = layout.raw,
           add = TRUE,
           main = "",
@@ -121,7 +130,11 @@ app_server <- function(input, output, session) {
       }, width = 500, height = alt_chain_plot_height()
       )
 
+
     }
+
+    isolate( draw.new.plot(current.chaintip.hash() != new.chaintip.hash ))
+
 
   })
 

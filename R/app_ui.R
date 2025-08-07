@@ -25,6 +25,9 @@ app_ui <- function(request) {
       shiny::br(),
       shiny::h5('Click to toggle dark mode: '),
       bslib::input_dark_mode(id = "dark_mode"),
+      shiny::sliderInput("n_blocks_display_chaintip", "Number of chaintip blocks to display: (most recent blocks)", min = 5, max = 30, value = 10, step = 5),
+      shiny::sliderInput("n_blocks_display_after_orphan", "Number of blocks to display after each orphan/altchain:", min = 0, max = 10, value = 1, step = 1),
+      shiny::h5('Note: Total chain length displayed will not exceed 150.'),
       shiny::br(),
       shiny::br(),
       shiny::h5(shiny::strong(shiny::HTML(paste0(
