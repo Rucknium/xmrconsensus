@@ -34,12 +34,13 @@ alt_chains_graph <- function(unrestricted.rpc.url) {
 
   alt_chains <- lapply(alt_chains$result$chains, function(x) {
     result <- data.table(prev_hash = x$main_chain_parent_block, hash = x$block_hash,
-      height = x$height)
+      height = x$height, main_chain_parent_block = x$main_chain_parent_block)
     if (length(x$block_hashes) == 1) { return(result) }
     result <- rbind(result,
       data.table(prev_hash = x$block_hashes[1:(length(x$block_hashes) - 1)],
         hash = x$block_hashes[2:length(x$block_hashes)],
-      height = x$height + 1:(length(x$block_hashes) - 1)) )
+      height = x$height + 1:(length(x$block_hashes) - 1),
+        main_chain_parent_block = x$main_chain_parent_block))
     result[, height := height - (nrow(result) - 1)]
     # Docs seem wrong "height - unsigned int; the block height of the first diverging block of this alternative chain."
     # Seems that height is the height of the _last_ diverging block of the chain.
@@ -90,22 +91,15 @@ alt_chains_graph <- function(unrestricted.rpc.url) {
   # block_headers.attr[, pool := rep(LETTERS, 10)[seq_len(nrow(block_headers.attr))] ]
   # block_headers.attr[1, pool := "unknown" ]
 
-  hash.exists.in.alt.chain <- vector("logical", nrow(alt_chains))
-  for ( i in seq_along(alt_chains$prev_hash)) {
-    hash.exists.in.alt.chain[i] <- alt_chains$prev_hash[i] %in% alt_chains$hash[-i]
-    # Don't want to count own row as "existing"
-  }
-
-  alt_chains <- alt_chains[prev_hash %in% unlist(block_headers) | hash.exists.in.alt.chain, ]
+  alt_chains <- alt_chains[main_chain_parent_block %in% unlist(block_headers), ]
 
   data.table::setorder(alt_chains, height)
   # Important to set order like this so that orphan blocks alternate sides
-  # TODO: Make sure this works ok with alt chains length 2 or longer
 
   orphaned.blocks.last.day <- alt_chains[height >= chaintip.height - 720, .N]
   # 720 is approximately one day of blocks
 
-  alt_chains.graph <- alt_chains[, .(prev_hash, hash)]
+  alt_chains.graph <- alt_chains[, .(prev_hash, hash, main_chain_parent_block)]
 
   alt_chains.attr <- alt_chains[, .(hash, height)]
   alt_chains.attr[, blocks.omitted := 0]
@@ -123,22 +117,29 @@ alt_chains_graph <- function(unrestricted.rpc.url) {
   }
 
   if (nrow(alt_chains.graph) == 1) {
-    chain.graph <- rbind(block_headers.graph, alt_chains.graph)
+    chain.graph <- rbind(block_headers.graph, alt_chains.graph, fill = TRUE)
+    chain.graph[, main_chain_parent_block := NULL]
+    # Don't need this anymore
   }
 
   if (nrow(alt_chains.graph) > 1) {
 
-    alt_chains.graph.top.seq <- seq(1, nrow(alt_chains.graph), by = 2)
+    alt_chains.graph.chunks <- split(alt_chains.graph, by = "main_chain_parent_block")
 
-    alt_chains.graph.end.seq <- seq(2, nrow(alt_chains.graph), by = 2)
+    alt_chains.graph.top.seq <- seq(1, length(alt_chains.graph.chunks), by = 2)
+
+    alt_chains.graph.end.seq <- seq(2, length(alt_chains.graph.chunks), by = 2)
 
     chain.graph <- rbind(
-      alt_chains.graph[alt_chains.graph.top.seq, ],
+      data.table::rbindlist(alt_chains.graph.chunks[alt_chains.graph.top.seq]),
       block_headers.graph,
-      alt_chains.graph[alt_chains.graph.end.seq, ])
+      data.table::rbindlist(alt_chains.graph.chunks[alt_chains.graph.end.seq]),
+      fill = TRUE)
     # Need to do this so that the orphaned alt chains
     # alternate between left and right of the main chain
     # in the plot
+    chain.graph[, main_chain_parent_block := NULL]
+    # Don't need this anymore
   }
 
 
