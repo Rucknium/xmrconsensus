@@ -70,7 +70,7 @@ app_server <- function(input, output, session) {
           main = "",
           asp = 0,
           edge.arrow.mode = 0,
-          margin = c(-0.15, 0.05, -0.1, 0.1),
+          margin = c(-0.15, 0.1, -0.1, 0.1),
           # The amount of empty space below, over, at the left and right of the plot
         )
 
@@ -107,10 +107,13 @@ app_server <- function(input, output, session) {
         plot(result$igraph.plot.data, layout = layout.raw,
           add = TRUE,
           main = "",
-          asp = 0, vertex.shape = "square", vertex.frame.color = NA,
+          asp = 0,
+          vertex.shape = result$chain.attr$shape,
+          vertex.frame.color = "darkgray",
+          vertex.size = 20,
           edge.width = 0,
           edge.arrow.mode = 0,
-          margin = c(-0.15, 0.05, -0.1, 0.1),
+          margin = c(-0.15, 0.1, -0.1, 0.1),
           vertex.label.family = "monospace",
           vertex.label.color = ifelse(input$dark_mode == "dark", "white", "black"),
           # https://stackoverflow.com/questions/64207220/rendering-plot-in-r-with-mono-spaced-family-font-does-not-display-characters-any
@@ -118,7 +121,7 @@ app_server <- function(input, output, session) {
           vertex.label = result$chain.attr$label
         )
 
-        legend(x = -1, y = 2 + grconvertY(2.3, from = "inches", to = "user"),
+        legend(x = -1, y = 2 + grconvertY(3, from = "inches", to = "user"),
           legend = c("Known pool", "Unknown pool or\nsolo miner"),
           fill = ifelse(input$dark_mode == rep("dark", 2), c("darkgreen", "darkred"),
             c("lightgreen", "pink")),
@@ -126,6 +129,16 @@ app_server <- function(input, output, session) {
           text.col = ifelse(input$dark_mode == "dark", "white", "black"),
           border = ifelse(input$dark_mode == "dark", "white", "black"),
           bty = "n", horiz = TRUE)
+
+        legend(x = -1, y = 2 + grconvertY(2.25, from = "inches", to = "user"),
+          legend = c("Block containing zero transactions",
+            "Block containing one or more transactions"),
+          pch = c(1, 0),
+          cex = 1.5,
+          pt.cex = 2,
+          text.col = ifelse(input$dark_mode == "dark", "white", "black"),
+          col = ifelse(input$dark_mode == "dark", "white", "black"),
+          bty = "n", horiz = FALSE)
 
 
       }, width = 500, height = alt_chain_plot_height()

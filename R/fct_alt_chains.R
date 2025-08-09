@@ -2,7 +2,7 @@
 
 
 
-#' alt_chains
+#' alt_chains_graph
 #'
 #' @description A fct function
 #'
@@ -74,12 +74,12 @@ alt_chains_graph <- function(unrestricted.rpc.url,
 
   block_headers.graph <- block_headers[, .(prev_hash, hash)]
 
-  block_headers.attr <- block_headers[, .(hash, height, rearrange.index)]
+  block_headers.attr <- block_headers[, .(hash, height, num_txes, rearrange.index)]
 
   block_headers.attr <- block_headers.attr[, blocks.omitted := c(diff(height), 0)]
 
 
-  pools <- read.csv("data-raw/pools/blocks.csv")
+  pools <- data.table::fread("data-raw/pools/blocks.csv")
   data.table::setnames(pools, c("Id", "Pool"), c("hash", "pool"))
 
   block_headers.attr <- merge(block_headers.attr, pools, all.x = TRUE)
@@ -140,6 +140,9 @@ alt_chains_graph <- function(unrestricted.rpc.url,
     # Don't need this anymore
   }
 
+  alt_chains.attr[, num_txes := 1]
+  # TODO: get number of txs of alt chain blocks. Assuming at least one
+  # tx in each alt block for now.
 
   chain.attr <- rbind(block_headers.attr, alt_chains.attr)
 
@@ -164,6 +167,9 @@ alt_chains_graph <- function(unrestricted.rpc.url,
   chain.attr[is.na(color), color := "yellow"]
   chain.attr[is.na(label), label := paste0("[", prettyNum(blocks.omitted, big.mark = ","), " blocks of\nuncontested chain omitted]")]
   # "Missing" because this vertex only appears in 'prev_hash', not 'hash'
+
+  chain.attr[, shape := ifelse( (num_txes == 0 | is.na(num_txes)) & color != "yellow",
+    "circle", "square")]
 
   igraph.plot.data <- igraph::graph_from_edgelist(as.matrix(chain.graph), directed = TRUE)
 

@@ -38,9 +38,8 @@ app_ui <- function(request) {
         shiny::textOutput("orphaned_blocks_last_day", inline = TRUE),
         " (", shiny::textOutput("orphaned_blocks_last_day_percent", inline = TRUE), "%)",
         ' block(s) orphaned in last 720 blocks (about 24 hours).')))),
-      shiny::h5(shiny::HTML(paste0("Last time updated: ",
+      shiny::h5(shiny::HTML(paste0("Last checked for new block: ",
         shiny::textOutput("last_update_time", inline = TRUE), " UTC"))),
-      shiny::br(),
       # golem::golem_welcome_page() # Remove this line to start building your UI
       plotOutput("plot1", inline = TRUE),
       # inline = TRUE means that it displays the plot with dimensions specified on the server side
