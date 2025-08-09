@@ -23,7 +23,7 @@ app_server <- function(input, output, session) {
 
   shiny::observe({
 
-    invalidateLater(30 * 1000) # 30 seconds
+    invalidateLater(75 * 1000) # 75 seconds. Good sync with monero-blocks running every 60 seconds.
 
     new.chaintip.hash <- rpc.req(unrestricted.rpc.url = unrestricted.rpc.url,
       method = "get_last_block_header", params = "")$result$block_header$hash
