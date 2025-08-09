@@ -121,7 +121,7 @@ app_server <- function(input, output, session) {
           vertex.label = result$chain.attr$label
         )
 
-        legend(x = -1, y = 2 + grconvertY(3, from = "inches", to = "user"),
+        legend(x = -1.25, y = 2 + grconvertY(3, from = "inches", to = "user"),
           legend = c("Known pool", "Unknown pool or\nsolo miner"),
           fill = ifelse(input$dark_mode == rep("dark", 2), c("darkgreen", "darkred"),
             c("lightgreen", "pink")),
@@ -130,7 +130,7 @@ app_server <- function(input, output, session) {
           border = ifelse(input$dark_mode == "dark", "white", "black"),
           bty = "n", horiz = TRUE)
 
-        legend(x = -1, y = 2 + grconvertY(2.25, from = "inches", to = "user"),
+        legend(x = -1.5, y = 2 + grconvertY(2.25, from = "inches", to = "user"),
           legend = c("Block containing zero transactions",
             "Block containing one or more transactions"),
           pch = c(1, 0),
