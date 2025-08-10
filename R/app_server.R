@@ -14,6 +14,9 @@ app_server <- function(input, output, session) {
 
   unrestricted.rpc.url <- "http://127.0.0.1:18081"
 
+  pool.chart.begin <- as.POSIXct("2025-08-08 12:00:00", tz = "UTC")
+
+
   observe({
     input$n_blocks_display_chaintip
     input$n_blocks_display_after_orphan
@@ -153,5 +156,81 @@ app_server <- function(input, output, session) {
     output$last_update_time <- renderText(last.update.time())
 
   })
+
+
+
+
+
+
+  observe({
+    pools <- data.table::fread("data-raw/pools/blocks.csv", fill = TRUE)
+    # fill = TRUE because CSV file format changed
+    data.table::setnames(pools, tolower) # Applied tolower() function to all column names
+
+    pools <- pools[timestamp / 1000 >= pool.chart.begin, ]
+    # Timestamp is in milliseconds
+    # Ignoring whether block was added to main chain, for simplicity
+
+    pools.tabulation <- pools[, .(n.blocks = .N), by = "pool"]
+    data.table::setorder(pools.tabulation, -n.blocks)
+    updateCheckboxGroupInput(session, "which_pools",
+      label = NULL,
+      choices = c("unknown", pools.tabulation$pool),
+      selected = c("unknown", pools.tabulation$pool))
+
+  })
+
+
+  output$plot2 <- plotly::renderPlotly({
+
+
+    blocks.pools <- pool_blocks(unrestricted.rpc.url = unrestricted.rpc.url,
+      aggregation.hours = input$pool_aggregation_hours, which.pools = input$which_pools,
+      pool.chart.begin = pool.chart.begin)
+
+    if (input$pool_percentage_or_number == "percentage") {
+      blocks.pools[, display.data := round(share.blocks * 100, digits = 2)]
+    }
+    if (input$pool_percentage_or_number == "number") {
+      blocks.pools[, display.data := n.blocks]
+    }
+
+    plotly::plot_ly(x = ~ blocks.pools$timestamp.binned, line = list(width = 5)) |>
+      plotly::add_lines(y = ~ blocks.pools$display.data,
+        color = ~ factor(blocks.pools$pool)
+      ) |>
+      plotly::layout(
+        hovermode = "x",
+        plot_bgcolor= ifelse(input$dark_mode == "dark", "#1D1F21", "#fff"),
+        paper_bgcolor = ifelse(input$dark_mode == "dark", "#1D1F21", "#fff"),
+        font = list(color = ifelse(input$dark_mode == "dark", "#fff", "#444"),
+          size = 18),
+        xaxis = list(
+          title = "",
+          gridcolor = ifelse(input$dark_mode == "dark", "#444", "lightgray")),
+        yaxis = list(
+          title = ifelse(input$pool_percentage_or_number == "percentage",
+            "Percentage of blocks mined during interval", "Number of blocks mined during interval"),
+          gridcolor = ifelse(input$dark_mode == "dark", "#444", "lightgray"),
+          rangemode = "tozero",
+          zerolinecolor = ifelse(input$dark_mode == "dark", "#fff", "#1D1F21"),
+          zerolinewidth = 2,
+          side = "right",
+          ticksuffix = ifelse(input$pool_percentage_or_number == "percentage", "%", "")),
+        # https://stackoverflow.com/questions/44638590/format-axis-tick-labels-to-percentage-in-plotly
+        legend = list(orientation = "h", xanchor = "center", x = 0.5, yanchor = "top", y = 1.1)
+      ) |>
+      plotly::config(displayModeBar = FALSE)
+
+
+
+
+  })
+
+
+
+
+
+
 
 }

@@ -79,7 +79,8 @@ alt_chains_graph <- function(unrestricted.rpc.url,
   block_headers.attr <- block_headers.attr[, blocks.omitted := c(diff(height), 0)]
 
 
-  pools <- data.table::fread("data-raw/pools/blocks.csv")
+  pools <- data.table::fread("data-raw/pools/blocks.csv", fill = TRUE)
+  # fill = TRUE because CSV file format changed
   data.table::setnames(pools, c("Id", "Pool"), c("hash", "pool"))
 
   block_headers.attr <- merge(block_headers.attr, pools, all.x = TRUE)
