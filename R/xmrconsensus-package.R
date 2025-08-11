@@ -11,5 +11,10 @@
 #' @importFrom data.table .NGRP
 #' @importFrom data.table .SD
 #' @importFrom data.table data.table
+#' @importFrom graphics grconvertY
+#' @importFrom graphics legend
+#' @importFrom graphics lines
+#' @importFrom graphics par
+#' @importFrom graphics rect
 ## usethis namespace: end
 NULL
