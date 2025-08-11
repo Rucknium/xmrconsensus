@@ -200,13 +200,16 @@ app_server <- function(input, output, session) {
         color = ~ factor(blocks.pools$pool)
       ) |>
       plotly::layout(
+        title = list(text = paste0("Blocks mined by Monero mining pools: ",
+          input$pool_aggregation_hours, "-hour intervals")),
+        margin = list(t = 100, l = 0, r = 0),
         hovermode = "x",
         plot_bgcolor= ifelse(input$dark_mode == "dark", "#1D1F21", "#fff"),
         paper_bgcolor = ifelse(input$dark_mode == "dark", "#1D1F21", "#fff"),
         font = list(color = ifelse(input$dark_mode == "dark", "#fff", "#444"),
           size = 18),
         xaxis = list(
-          title = "",
+          title = "Time in UTC time zone",
           gridcolor = ifelse(input$dark_mode == "dark", "#444", "lightgray")),
         yaxis = list(
           title = ifelse(input$pool_percentage_or_number == "percentage",
@@ -218,7 +221,7 @@ app_server <- function(input, output, session) {
           side = "right",
           ticksuffix = ifelse(input$pool_percentage_or_number == "percentage", "%", "")),
         # https://stackoverflow.com/questions/44638590/format-axis-tick-labels-to-percentage-in-plotly
-        legend = list(orientation = "h", xanchor = "center", x = 0.5, yanchor = "top", y = 1.1)
+        legend = list(orientation = "h", xanchor = "center", x = 0.5, yanchor = "top", y = 1.05)
       ) |>
       plotly::config(displayModeBar = FALSE)
 
