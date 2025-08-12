@@ -11,10 +11,11 @@ app_ui <- function(request) {
     # Your application UI logic
     bslib::page_fluid(
       titlePanel("Monero Consensus Status"),
-      shiny::h5(shiny::strong(shiny::HTML('The open source code for this web app is available <a href="https://github.com/Rucknium/xmrconsensus">here</a>.'))),
+      shiny::h5(shiny::strong(shiny::HTML('The open source code for this web app is available <a href="https://github.com/Rucknium/xmrconsensus">here</a>. If website is unstable, <a href="https://github.com/Rucknium/xmrconsensus?tab=readme-ov-file#running-xmrconsensus-on-your-own-computer">run it on your own computer</a>.'))),
       shiny::br(),
       shiny::tabsetPanel(
-        shiny::tabPanel("Orphaned blocks",
+        shiny::tabPanel("⛓ Orphaned blocks",
+          shiny::br(),
           shiny::h5(shiny::HTML('This web app displays a visualization of recent <a href="https://monero.stackexchange.com/questions/3311/what-are-orphaned-blocks">orphaned blocks</a> and alternative chains of the Monero blockchain.')),
           shiny::br(),
           shiny::h5(shiny::HTML('Occasional orphaned blocks are normal. They occur naturally when two miners mine different valid blocks almost simultaneously. A high rate of orphaned blocks can indicate a problem in network-wide connection latency or even malicious behavior by one or more entities with a large hashpower share.')),
@@ -47,7 +48,7 @@ app_ui <- function(request) {
           plotOutput("plot1", inline = TRUE),
           # inline = TRUE means that it displays the plot with dimensions specified on the server side
         ),
-        shiny::tabPanel("Blocks mined by mining pools",
+        shiny::tabPanel("📈 Blocks mined by mining pools",
           shiny::br(),
           shiny::h5(shiny::HTML('Below is a line chart of the percentage of blocks mined by each mining pool. Over long intervals, the percentage of blocks mined by each mining pool can help assess certain risks in the Monero ecosystem. A malicious mining pool that acquires a majority of mining hashpower for a period of time can cause problems for ordinary users and other miners, depending on its choices:')),
           shiny::br(),
