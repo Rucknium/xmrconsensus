@@ -25,21 +25,85 @@ output: github_document
 
 An accessible live deployment of this app is available at [moneroconsensus.info](https://moneroconsensus.info).
 
-## Installation
+## Running `xmrconsensus` on your own computer
 
-Install R. Linux users should install the `r-base` and `r-base-dev` system packages.
+Deployment has only been tested on Linux.
 
-You can install the development version of `xmrconsensus` from [GitHub](https://github.com/) if you have `git` and `curl` installed on your system with:
+### Run a Monero node
 
-```{r, eval = FALSE}
-install.packages("remotes")
-remotes::install_github("Rucknium/xmrconsensus", upgrade = FALSE)
+You must have a Monero node with an unrestricted RPC port available to run the app. Normally, the only way to have access to an unrestricted RPC port is to run a Monero node on your own machine. The quickest way to start running a Monero node is to download the ["Monero CLI Wallet" at the getmonero.org website](https://www.getmonero.org/downloads/#cli) for your operating system and start the `monerod` node software on your command line. A pruned node should be fine for the purposes of this app. You will need to wait a while, up to a few days, to download and verify the blockchain. Only sync on an internal SSD. Do not use an HDD or USB drive. As of August 2025, an unpruned node will need about 260GB of storage. A pruned node will need about 100GB of storage.
+
+If you already have a Monero node running, just keep it running. If you are starting up a completely new node or re-starting a node after some time of it being turned off, you can add the `--keep-alt-blocks` flag to the `monerod` startup arguments to [preserve the data on alternative chains between restarts](https://docs.getmonero.org/interacting/monerod-reference/#testing-monero-itself). If this flag is not enabled, the node will delete the alternative chain data the next time it shuts down.
+
+### Download and install `xmrconsensus`
+
+Install [R](https://www.r-project.org/). Linux users should install the `r-base` and `r-base-dev` system packages.
+
+Clone this repo into a directory on your local machine with:
+
+```bash
+git clone https://github.com/Rucknium/xmrconsensus.git
 ```
 
-## Run
+Go into the `xmrconsensus` directory by inputting `cd xmrconsensus`. Then start an R session by inputting `R` into the terminal. Install the package:
 
-You can launch the application locally by running:
+```{r, eval = FALSE}
+install.packages("devtools")
+devtools::install(upgrade = FALSE, Ncpus = 4)
+```
+
+If you have greater or fewer than 4 threads available on your machine, you can adjust the `Ncpus` argument. If you are on Linux, compilation of all the package dependencies may take some time. close the R session after it is finished installing by inputting `quit(save = "no")`.
+
+### Download and build `monero-blocks`
+
+`moneroconsensus` needs a separate tool to fetch data on which mining pools claim each block. The tool is `monero-blocks`, written in Go by DataHorader and available [here](https://git.gammaspectra.live/WeebDataHoarder/monero-blocks). You should have [a recent version of Go](https://go.dev/doc/install) on your machine.
+
+To set up the tool, start in the `xmrconsensus`. Then input into your console:
+
+```bash
+cd data-raw/pools
+git clone https://git.gammaspectra.live/WeebDataHoarder/monero-blocks.git
+cd monero-blocks
+go build
+<!-- ``` -->
+
+This will create the `monero-blocks` binary executable program in the `data-raw/pools/monero-blocks` directory.
+
+### Run `monero-blocks`
+
+Next, you need to run `monero-blocks` in a loop to create the `blocks.csv` file in the `data-raw/pools` directory and collect mined block data as pools post it in their API. The easiest way to do this is navigate back to the `data-raw/pools`, start an R session, and input
+
+```{r, eval = FALSE}
+xmrconsensus::pools.collect()
+```
+
+You will need to leave the process running in its own terminal window.
+
+### Run `xmrconsensus`
+
+Go to the `xmrconsensus` directory in a terminal. Open an R session and input
 
 ```{r, eval = FALSE}
 xmrconsensus::run_app()
 ```
+
+By default, R will open your default web browser to the Shiny app. If you prefer to open your web browser yourself, use this instead:
+
+```{r, eval = FALSE}
+xmrconsensus::run_app(options = list(launch.browser = FALSE))
+```
+
+The full local URL, with port number, will be printed to the console. Paste the URL into your internet browser.
+
+### Update `xmrconsensus`
+
+To get the latest version of `xmrconsensus`, pull the latest git repo and install:
+
+```bash
+cd xmrconsensus
+git pull
+R -e "devtools::install(upgrade = FALSE)"
+```
+
+And restart `xmrconsensus::run_app()`.
+
