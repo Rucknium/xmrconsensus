@@ -32,8 +32,8 @@ for your operating system and start the `monerod` node software on your
 command line. A pruned node should be fine for the purposes of this app.
 You will need to wait a while, up to a few days, to download and verify
 the blockchain. Only sync on an internal SSD. Do not use an HDD or USB
-drive. As of August 2025, an unpruned node will need about 260GB of
-storage. A pruned node will need about 100GB of storage.
+drive. As of August 2025, an unpruned node will occupy about 260GB of
+storage. A pruned node will occupy about 100GB of storage.
 
 If you already have a Monero node running, just keep it running. If you
 are starting up a completely new node or re-starting a node after some
@@ -86,14 +86,17 @@ cd data-raw/pools
 git clone https://git.gammaspectra.live/WeebDataHoarder/monero-blocks.git
 cd monero-blocks
 go build
-<!-- ``` -->
+```
 
-This will create the `monero-blocks` binary executable program in the `data-raw/pools/monero-blocks` directory.
+This will create the `monero-blocks` binary executable program in the
+`data-raw/pools/monero-blocks` directory.
 
 ### Run `monero-blocks`
 
-Next, you need to run `monero-blocks` in a loop to create the `blocks.csv` file in the `data-raw/pools` directory and collect mined block data as pools post it in their API. The easiest way to do this is navigate back to the `data-raw/pools`, start an R session, and input
-
+Next, you need to run `monero-blocks` in a loop to create the
+`blocks.csv` file in the `data-raw/pools` directory and collect mined
+block data as pools post it in their API. The easiest way to do this is
+navigate back to the `data-raw/pools`, start an R session, and input
 
 ``` r
 xmrconsensus::pools.collect()
