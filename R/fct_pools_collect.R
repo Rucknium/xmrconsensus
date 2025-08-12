@@ -43,11 +43,15 @@ pools.collect <- function(unrestricted.rpc.url = "http://127.0.0.1:18081",
       unrestricted.rpc.url, "?"))
   }
 
-  if ( ! file.exists("monero-blocks/monero-blocks")) {
+  monero_blocks.location <- ifelse(.Platform$OS.type == "windows",
+    "monero-blocks/monero-blocks.exe",
+    "monero-blocks/monero-blocks")
+
+  if ( ! file.exists(monero_blocks.location)) {
     stop("Cannot find the 'monero-blocks' program in the 'monero-blocks' local working directory.\nDid you remember to build it?")
   }
 
-  system(paste0("monero-blocks/monero-blocks --height ", chaintip.height - init.blocks))
+  system(paste0(monero_blocks.location, " --height ", chaintip.height - init.blocks))
   # Initial data download
 
   # Infinite loop. Input ctrl + c to stop.
@@ -64,7 +68,7 @@ pools.collect <- function(unrestricted.rpc.url = "http://127.0.0.1:18081",
     }
 
     chaintip.height <- last_block_header$result$block_header$height
-    system(paste0("monero-blocks/monero-blocks --height ", chaintip.height - recent.blocks))
+    system(paste0(monero_blocks.location, " --height ", chaintip.height - recent.blocks))
     Sys.sleep(poll.time)
   }
 
