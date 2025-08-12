@@ -12,7 +12,9 @@ app_server <- function(input, output, session) {
   draw.new.plot <- reactiveVal(FALSE)
   last.update.time <- reactiveVal(as.character(round(Sys.time())))
 
-  unrestricted.rpc.url <- "http://127.0.0.1:18081"
+  unrestricted.rpc.url <- golem::get_golem_options("unrestricted.rpc.url")
+  # https://github.com/ColinFay/golemexample#passing-arguments-to-run_app
+  # http://127.0.0.1:18081 by default
 
   pool.chart.begin <- as.POSIXct("2025-08-08 12:00:00", tz = "UTC")
 

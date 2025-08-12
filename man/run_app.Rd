@@ -9,6 +9,7 @@ run_app(
   options = list(),
   enableBookmarking = NULL,
   uiPattern = "/",
+  unrestricted.rpc.url = "http://127.0.0.1:18081",
   ...
 )
 }

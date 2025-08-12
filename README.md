@@ -102,6 +102,12 @@ navigate back to the `data-raw/pools`, start an R session, and input
 xmrconsensus::pools.collect()
 ```
 
+If your Monero node’s unrestricted RPC is not at the default
+`http://127.0.0.1:18081`, then use
+`xmrconsensus::pools.collect(unrestricted.rpc.url = "http://127.0.0.1:18081")`
+instead, replacing `http://127.0.0.1:18081` with the full URL and port
+of your node’s unrestricted RPC.
+
 You will need to leave the process running in its own terminal window.
 
 ### Run `xmrconsensus`
@@ -122,6 +128,12 @@ xmrconsensus::run_app(options = list(launch.browser = FALSE))
 
 The full local URL, with port number, will be printed to the console.
 Paste the URL into your internet browser.
+
+If your Monero node’s unrestricted RPC is not at the default
+`http://127.0.0.1:18081`, then use
+`xmrconsensus::run_app(unrestricted.rpc.url = "http://127.0.0.1:18081")`
+instead, replacing `http://127.0.0.1:18081` with the full URL and port
+of your node’s unrestricted RPC.
 
 ### Update `xmrconsensus`
 
