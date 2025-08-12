@@ -29,6 +29,14 @@ alt_chains_graph <- function(unrestricted.rpc.url,
     # Get data from about a week ago to today
     handle = handle)
 
+  if (length(alt_chains$result$chains) == 0 ) {
+    stop(paste0("Monero node is not aware of any alt chains or orphaned blocks.\n",
+      "This can occur if your node was restarted recently.\n",
+      "You can check if you have any alt chains by going to the monerod console\n",
+      "(the terminal window where monerod is running) and inputting 'alt_chain_info'.\n",
+      "Since there are no alt chains, the app has nothing interesting to display and has exited."))
+  }
+
 
   alt_chains <- lapply(alt_chains$result$chains, function(x) {
     result <- data.table(prev_hash = x$main_chain_parent_block, hash = x$block_hash,
