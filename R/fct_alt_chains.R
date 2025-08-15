@@ -180,6 +180,8 @@ alt_chains_graph <- function(unrestricted.rpc.url,
   chain.attr[, shape := ifelse( (num_txes == 0 | is.na(num_txes)) & color != "yellow",
     "circle", "square")]
 
+  chain.attr[, is.alt.block := hash %in% alt_chains$hash]
+
   igraph.plot.data <- igraph::graph_from_edgelist(as.matrix(chain.graph), directed = TRUE)
 
   plot.height <- nrow(block_headers.graph) * 60

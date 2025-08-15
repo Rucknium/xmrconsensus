@@ -35,6 +35,10 @@ app_ui <- function(request) {
             "Number of blocks to display after each orphan/altchain:",
             min = 0, max = 10, value = 1, step = 1, width = "500px"),
           shiny::h5('Note: Total displayed chain length will not exceed 150.'),
+          shiny::radioButtons("tree_mode", "Display mode: ",
+            choiceNames = c("Linear (main chain on left, orphans on right)",
+              "Tree (main chain alternates between left and right)"),
+            choiceValues = c("linear", "tree"), width = "500px"),
           shiny::br(),
           shiny::br(),
           shiny::h5(shiny::strong(shiny::HTML(paste0(

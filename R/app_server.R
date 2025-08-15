@@ -71,12 +71,27 @@ app_server <- function(input, output, session) {
           # Need to the "else" so that toggle works between plot refreshes
         }
 
+        if (input$tree_mode == "linear") {
+          layout.raw[, 1] <- ifelse(result$chain.attr$is.alt.block, 0.5, -0.5)
+          # Exact 0.5 values don't matter. The plot will re-scale the x axis.
+
+          plot.margin <- c(-0.15, 0.5, -0.13, 1)
+          # "The amount of empty space below, over, at the left and right of the plot"
+          # No, probably it is the order of mar in par(): c(bottom, left, top, right)
+
+          vertex.size <- 30
+        }
+
+        if (input$tree_mode == "tree") {
+          plot.margin <- c(-0.15, 0.1, -0.13, 0.2)
+          vertex.size <- 20
+        }
+
         plot(result$igraph.plot.data, layout = layout.raw,
           main = "",
           asp = 0,
           edge.arrow.mode = 0,
-          margin = c(-0.15, 0.1, -0.1, 0.1),
-          # The amount of empty space below, over, at the left and right of the plot
+          margin = plot.margin,
         )
 
         # Allow plotted elements to fall outside of plotting region:
@@ -97,7 +112,9 @@ app_server <- function(input, output, session) {
 
         layout.rescaled[, 1] <- rescale_minMax(layout.rescaled[, 1]) * 2 - 1
         layout.rescaled[, 2] <- rescale_minMax(layout.rescaled[, 2]) * 2 - 1
-        # Rescale t the plot cordinate area : -1 to 1.
+        # Rescale the plot coordinate area : -1 to 1.
+
+
 
         edgelist <- igraph::as_edgelist(result$igraph.plot.data, names = FALSE)
 
@@ -115,10 +132,10 @@ app_server <- function(input, output, session) {
           asp = 0,
           vertex.shape = result$chain.attr$shape,
           vertex.frame.color = "darkgray",
-          vertex.size = 20,
+          vertex.size = vertex.size,
           edge.width = 0,
           edge.arrow.mode = 0,
-          margin = c(-0.15, 0.1, -0.1, 0.1),
+          margin = plot.margin,
           vertex.label.family = "monospace",
           vertex.label.color = ifelse(input$dark_mode == "dark", "white", "black"),
           # https://stackoverflow.com/questions/64207220/rendering-plot-in-r-with-mono-spaced-family-font-does-not-display-characters-any
@@ -145,6 +162,12 @@ app_server <- function(input, output, session) {
           col = ifelse(input$dark_mode == "dark", "white", "black"),
           bty = "n", horiz = FALSE)
 
+        # Add dashed lines above and beow omitted blocks
+        vert.distance <- median(diff(sort(layout.rescaled[, 2])))
+        which.omitted <- result$chain.attr[, which(blocks.omitted > 1 & ! is.na(blocks.omitted) ) ]
+        omitted.positions <- layout.rescaled[which.omitted, 2]
+        abline(h = c(omitted.positions + vert.distance * 0.5,
+          omitted.positions - vert.distance * 0.5), lty = "dashed")
 
       }, width = 500, height = alt_chain_plot_height()
       )
