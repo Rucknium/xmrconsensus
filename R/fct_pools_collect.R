@@ -43,6 +43,8 @@ pools.collect <- function(unrestricted.rpc.url = "http://127.0.0.1:18081",
       unrestricted.rpc.url, "?"))
   }
 
+  chaintip.height <- last_block_header$result$block_header$height
+
   monero_blocks.location <- ifelse(.Platform$OS.type == "windows",
     "monero-blocks/monero-blocks.exe",
     "monero-blocks/monero-blocks")
