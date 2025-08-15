@@ -75,7 +75,7 @@ app_server <- function(input, output, session) {
           layout.raw[, 1] <- ifelse(result$chain.attr$is.alt.block, 0.5, -0.5)
           # Exact 0.5 values don't matter. The plot will re-scale the x axis.
 
-          plot.margin <- c(-0.15, 0.5, -0.13, 1)
+          plot.margin <- c(-0.15, 0.45, -0.13, 1)
           # "The amount of empty space below, over, at the left and right of the plot"
           # No, probably it is the order of mar in par(): c(bottom, left, top, right)
 
@@ -162,12 +162,13 @@ app_server <- function(input, output, session) {
           col = ifelse(input$dark_mode == "dark", "white", "black"),
           bty = "n", horiz = FALSE)
 
-        # Add dashed lines above and beow omitted blocks
+        # Add dashed lines above and below omitted blocks
         vert.distance <- median(diff(sort(layout.rescaled[, 2])))
         which.omitted <- result$chain.attr[, which(blocks.omitted > 1 & ! is.na(blocks.omitted) ) ]
         omitted.positions <- layout.rescaled[which.omitted, 2]
         abline(h = c(omitted.positions + vert.distance * 0.5,
-          omitted.positions - vert.distance * 0.5), lty = "dashed")
+          omitted.positions - vert.distance * 0.5), lty = "dashed",
+          col = ifelse(input$dark_mode == "dark", "white", "black"))
 
       }, width = 500, height = alt_chain_plot_height()
       )
