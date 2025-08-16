@@ -10,7 +10,8 @@
 #'
 #' @noRd
 alt_chains_graph <- function(unrestricted.rpc.url,
-  n.blocks.display.chaintip = 10, n.blocks.display.after.orphan = 1) {
+  n.blocks.display.chaintip = 10, n.blocks.display.after.orphan = 1,
+  mining.pool.data.available = TRUE) {
 
   handle <- RCurl::getCurlHandle()
 
@@ -86,9 +87,17 @@ alt_chains_graph <- function(unrestricted.rpc.url,
 
   block_headers.attr <- block_headers.attr[, blocks.omitted := c(diff(height), 0)]
 
+  if (mining.pool.data.available) {
+    pools <- data.table::fread("data-raw/pools/blocks.csv", fill = TRUE)
+    # fill = TRUE because CSV file format changed
+  } else {
+    pools <- structure(list(Height = integer(0), Id = character(0),
+      Timestamp = structure(numeric(0), class = "integer64"),
+      Reward = character(0), Pool = character(0), Valid = logical(0),
+      Miner = character(0)), row.names = c(NA, 0L), class = c("data.table",
+        "data.frame"))
+  }
 
-  pools <- data.table::fread("data-raw/pools/blocks.csv", fill = TRUE)
-  # fill = TRUE because CSV file format changed
   data.table::setnames(pools, c("Id", "Pool"), c("hash", "pool"))
 
   block_headers.attr <- merge(block_headers.attr, pools, all.x = TRUE)

@@ -13,6 +13,7 @@ run_app <- function(
   enableBookmarking = NULL,
   uiPattern = "/",
   unrestricted.rpc.url = "http://127.0.0.1:18081",
+  mining.pool.data.available = TRUE,
   ...
 ) {
   with_golem_options(
@@ -24,6 +25,8 @@ run_app <- function(
       enableBookmarking = enableBookmarking,
       uiPattern = uiPattern
     ),
-    golem_opts = c(list(unrestricted.rpc.url = unrestricted.rpc.url), list(...))
+    golem_opts = c(list(unrestricted.rpc.url = unrestricted.rpc.url),
+      mining.pool.data.available = mining.pool.data.available,
+      list(...))
   )
 }

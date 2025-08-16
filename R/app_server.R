@@ -42,7 +42,10 @@ app_server <- function(input, output, session) {
 
       result <- alt_chains_graph(unrestricted.rpc.url = unrestricted.rpc.url,
         n.blocks.display.chaintip = input$n_blocks_display_chaintip,
-        n.blocks.display.after.orphan = input$n_blocks_display_after_orphan)
+        n.blocks.display.after.orphan = input$n_blocks_display_after_orphan,
+        mining.pool.data.available = golem::get_golem_options("mining.pool.data.available"))
+      # https://github.com/ColinFay/golemexample#passing-arguments-to-run_app
+      # TRUE by default
 
       output$orphaned_blocks_last_day <- renderText(result$orphaned.blocks.last.day)
       output$orphaned_blocks_last_day_percent <-
