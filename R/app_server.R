@@ -192,8 +192,19 @@ app_server <- function(input, output, session) {
 
 
   observe({
-    pools <- data.table::fread("data-raw/pools/blocks.csv", fill = TRUE)
-    # fill = TRUE because CSV file format changed
+    if ( golem::get_golem_options("mining.pool.data.available") ) {
+      # https://github.com/ColinFay/golemexample#passing-arguments-to-run_app
+      # TRUE by default
+      pools <- data.table::fread("data-raw/pools/blocks.csv", fill = TRUE)
+      # fill = TRUE because CSV file format changed
+    } else {
+      pools <- structure(list(Height = integer(0), Id = character(0),
+        Timestamp = structure(numeric(0), class = "integer64"),
+        Reward = character(0), Pool = character(0), Valid = logical(0),
+        Miner = character(0)), row.names = c(NA, 0L), class = c("data.table",
+          "data.frame"))
+    }
+
     data.table::setnames(pools, tolower) # Applied tolower() function to all column names
 
     pools <- pools[timestamp / 1000 >= pool.chart.begin, ]

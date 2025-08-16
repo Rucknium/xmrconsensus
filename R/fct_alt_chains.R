@@ -130,17 +130,18 @@ alt_chains_graph <- function(unrestricted.rpc.url,
 
   if (nrow(alt_chains.graph) == 0) {
     chain.graph <- block_headers.graph
+    alt_chains.graph.chunks <- NULL
+  } else {
+    alt_chains.graph.chunks <- split(alt_chains.graph, by = "main_chain_parent_block")
   }
 
-  if (nrow(alt_chains.graph) == 1) {
+  if (length(alt_chains.graph.chunks) == 1) {
     chain.graph <- rbind(block_headers.graph, alt_chains.graph, fill = TRUE)
     chain.graph[, main_chain_parent_block := NULL]
     # Don't need this anymore
   }
 
-  if (nrow(alt_chains.graph) > 1) {
-
-    alt_chains.graph.chunks <- split(alt_chains.graph, by = "main_chain_parent_block")
+  if (length(alt_chains.graph.chunks) > 1) {
 
     alt_chains.graph.top.seq <- seq(1, length(alt_chains.graph.chunks), by = 2)
 
