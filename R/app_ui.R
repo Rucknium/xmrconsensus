@@ -49,7 +49,9 @@ app_ui <- function(request) {
             shiny::textOutput("last_update_time", inline = TRUE), " UTC"))),
           shiny::br(),
           # golem::golem_welcome_page() # Remove this line to start building your UI
-          plotOutput("plot1", inline = TRUE),
+      div(style = "padding-top: 24px; padding-bottom: 8px;", # add vertical padding
+        plotOutput("plot1", inline = TRUE)
+      ),
           # inline = TRUE means that it displays the plot with dimensions specified on the server side
         ),
         shiny::tabPanel("📈 Blocks mined by mining pools",
