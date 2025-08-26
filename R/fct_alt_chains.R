@@ -40,17 +40,21 @@ alt_chains_graph <- function(unrestricted.rpc.url,
 
 
   alt_chains <- lapply(alt_chains$result$chains, function(x) {
-    result <- data.table(prev_hash = x$main_chain_parent_block, hash = x$block_hash,
-      height = x$height, main_chain_parent_block = x$main_chain_parent_block)
+    chain.length <- length(x$block_hashes)
+    base.starting.height <- x$height - chain.length + 1
+    # Docs seem wrong "height - unsigned int; the block height of the first diverging block of this alternative chain."
+    # (Docs are being fixed.)
+    # Seems that height is the height of the _last_ diverging block of the chain.
+    result <- data.table(prev_hash = x$main_chain_parent_block,
+      hash = x$block_hashes[chain.length],
+      height = base.starting.height, main_chain_parent_block = x$main_chain_parent_block)
     if (length(x$block_hashes) == 1) { return(result) }
     result <- rbind(result,
-      data.table(prev_hash = x$block_hashes[1:(length(x$block_hashes) - 1)],
-        hash = x$block_hashes[2:length(x$block_hashes)],
-      height = x$height + 1:(length(x$block_hashes) - 1),
+      data.table(
+        prev_hash = x$block_hashes[2:chain.length],
+        hash = x$block_hashes[1:(chain.length - 1)],
+        height = base.starting.height + rev(seq_len(chain.length - 1)),
         main_chain_parent_block = x$main_chain_parent_block))
-    result[, height := height - (nrow(result) - 1)]
-    # Docs seem wrong "height - unsigned int; the block height of the first diverging block of this alternative chain."
-    # Seems that height is the height of the _last_ diverging block of the chain.
     return(result)
   })
 
