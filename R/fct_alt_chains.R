@@ -111,13 +111,15 @@ alt_chains_graph <- function(unrestricted.rpc.url,
   # block_headers.attr[, pool := rep(LETTERS, 10)[seq_len(nrow(block_headers.attr))] ]
   # block_headers.attr[1, pool := "unknown" ]
 
+  orphaned.blocks.last.day <- alt_chains[height >= chaintip.height - 720, .N]
+  # 720 is approximately one day of blocks
+  # Get orphaned.blocks.last.day before alt_chains is trimmed to
+  # max.blocks.displayed (150) main chain blocks by the next line
+
   alt_chains <- alt_chains[main_chain_parent_block %in% unlist(block_headers), ]
 
   data.table::setorder(alt_chains, height)
   # Important to set order like this so that orphan blocks alternate sides
-
-  orphaned.blocks.last.day <- alt_chains[height >= chaintip.height - 720, .N]
-  # 720 is approximately one day of blocks
 
   alt_chains.graph <- alt_chains[, .(prev_hash, hash, main_chain_parent_block)]
 
