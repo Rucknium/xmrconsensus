@@ -47,9 +47,17 @@ app_server <- function(input, output, session) {
       # https://github.com/ColinFay/golemexample#passing-arguments-to-run_app
       # TRUE by default
 
-      output$orphaned_blocks_last_day <- renderText(result$orphaned.blocks.last.day)
-      output$orphaned_blocks_last_day_percent <-
-        renderText(round( 100 * result$orphaned.blocks.last.day / 720, digits = 2))
+      output$orphaned_blocks_last_day_known <-
+        renderText(result$orphaned.blocks["orphaned.blocks.last.day.known"])
+
+      output$orphaned_blocks_last_day_known_percent <-
+        renderText(round( 100 * result$orphaned.blocks["orphaned.blocks.last.day.known"] / 720, digits = 2))
+
+      output$orphaned_blocks_last_day_unknown <-
+        renderText(result$orphaned.blocks["orphaned.blocks.last.day.unknown"])
+
+      output$orphaned_blocks_last_day_unknown_percent <-
+        renderText(round( 100 * result$orphaned.blocks["orphaned.blocks.last.day.unknown"] / 720, digits = 2))
 
       isolate(alt_chain_plot_height(result$plot.height))
 

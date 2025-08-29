@@ -116,6 +116,12 @@ alt_chains_graph <- function(unrestricted.rpc.url,
   # Get orphaned.blocks.last.day before alt_chains is trimmed to
   # max.blocks.displayed (150) main chain blocks by the next line
 
+  orphaned.blocks.last.day.known <- alt_chains[height >= chaintip.height - 720 & hash %in% pools$hash, .N]
+
+  orphaned.blocks <- c(orphaned.blocks.last.day = orphaned.blocks.last.day,
+    orphaned.blocks.last.day.known = orphaned.blocks.last.day.known,
+    orphaned.blocks.last.day.unknown = orphaned.blocks.last.day - orphaned.blocks.last.day.known)
+
   alt_chains <- alt_chains[main_chain_parent_block %in% unlist(block_headers), ]
 
   data.table::setorder(alt_chains, height)
@@ -203,6 +209,6 @@ alt_chains_graph <- function(unrestricted.rpc.url,
   plot.height <- nrow(block_headers.graph) * 60
 
   list(igraph.plot.data = igraph.plot.data, chain.attr = chain.attr,
-    plot.height = plot.height, orphaned.blocks.last.day = orphaned.blocks.last.day)
+    plot.height = plot.height, orphaned.blocks = orphaned.blocks)
 
 }

@@ -42,9 +42,13 @@ app_ui <- function(request) {
           shiny::br(),
           shiny::br(),
           shiny::h5(shiny::strong(shiny::HTML(paste0(
-            shiny::textOutput("orphaned_blocks_last_day", inline = TRUE),
-            " (", shiny::textOutput("orphaned_blocks_last_day_percent", inline = TRUE), "%)",
-            ' block(s) orphaned in last 720 blocks (about 24 hours).')))),
+            shiny::textOutput("orphaned_blocks_last_day_known", inline = TRUE),
+            " (", shiny::textOutput("orphaned_blocks_last_day_known_percent", inline = TRUE), "%)",
+            ' block(s) produced by known pools have been orphaned in last 720 blocks (about 24 hours).')))),
+          shiny::h5(shiny::strong(shiny::HTML(paste0(
+            shiny::textOutput("orphaned_blocks_last_day_unknown", inline = TRUE),
+            " (", shiny::textOutput("orphaned_blocks_last_day_unknown_percent", inline = TRUE), "%)",
+            ' block(s) produced by unknown pools or solo miners have been orphaned in last 720 blocks.')))),
           shiny::h5(shiny::HTML(paste0("Last checked for new block: ",
             shiny::textOutput("last_update_time", inline = TRUE), " UTC"))),
           shiny::br(),
