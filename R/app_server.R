@@ -151,7 +151,8 @@ app_server <- function(input, output, session) {
           vertex.label.color = ifelse(input$dark_mode == "dark", "white", "black"),
           # https://stackoverflow.com/questions/64207220/rendering-plot-in-r-with-mono-spaced-family-font-does-not-display-characters-any
           vertex.color = result$chain.attr$color,
-          vertex.label = result$chain.attr$label
+          vertex.label = result$chain.attr$label,
+          vertex.label.cex = 0.9
         )
 
         legend(x = -1.25, y = 2 + grconvertY(3, from = "inches", to = "user"),

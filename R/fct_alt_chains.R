@@ -87,7 +87,7 @@ alt_chains_graph <- function(unrestricted.rpc.url,
 
   block_headers.graph <- block_headers[, .(prev_hash, hash)]
 
-  block_headers.attr <- block_headers[, .(hash, height, num_txes, rearrange.index)]
+  block_headers.attr <- block_headers[, .(hash, height, timestamp, num_txes, rearrange.index)]
 
   block_headers.attr <- block_headers.attr[, blocks.omitted := c(diff(height), 0)]
 
@@ -130,6 +130,7 @@ alt_chains_graph <- function(unrestricted.rpc.url,
   alt_chains.graph <- alt_chains[, .(prev_hash, hash, main_chain_parent_block)]
 
   alt_chains.attr <- alt_chains[, .(hash, height)]
+  alt_chains.attr[, timestamp := NA]
   alt_chains.attr[, blocks.omitted := 0]
 
   alt_chains.attr <- merge(alt_chains.attr, pools, all.x = TRUE)
@@ -180,6 +181,7 @@ alt_chains_graph <- function(unrestricted.rpc.url,
   chain.attr[, label := paste0(
     "Height: ", prettyNum(height, big.mark = ","), "\n",
     "Hash: ", substr(hash, 1, 8), "...", "\n",
+    ifelse(is.na(timestamp), "", paste0("Timestamp: ", as.POSIXct(timestamp), " UTC\n")),
     "Pool: " , pool
   )]
 
