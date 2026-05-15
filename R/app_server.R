@@ -143,7 +143,7 @@ app_server <- function(input, output, session) {
           asp = 0,
           vertex.shape = result$chain.attr$shape,
           vertex.frame.color = "darkgray",
-          vertex.size = vertex.size,
+          vertex.size = vertex.size * 0.5,
           edge.width = 0,
           edge.arrow.mode = 0,
           margin = plot.margin,
