@@ -38,7 +38,7 @@ app_ui <- function(request) {
           shiny::radioButtons("tree_mode", "Display mode: ",
             choiceNames = c("Linear (main chain on left, orphans on right)",
               "Tree (main chain alternates between left and right)"),
-            choiceValues = c("linear", "tree"), width = "500px"),
+            choiceValues = c("linear", "tree"), width = "500px", selected = "tree"),
           shiny::br(),
           shiny::br(),
           shiny::h5(shiny::strong(shiny::HTML(paste0(

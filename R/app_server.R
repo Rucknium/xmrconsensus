@@ -182,7 +182,7 @@ app_server <- function(input, output, session) {
           omitted.positions - vert.distance * 0.5), lty = "dashed",
           col = ifelse(input$dark_mode == "dark", "white", "black"))
 
-      }, width = 500, height = alt_chain_plot_height()
+      }, width = 1000, height = alt_chain_plot_height()
       )
 
 
